@@ -18,6 +18,8 @@ August 9, Acapulco, Mexico.  See also http://sigmakee.sourceforge.net
 package com.articulate.sigma.wordNet;
 
 import com.articulate.sigma.*;
+import com.articulate.sigma.serializer.SerializerFactory;
+import com.articulate.sigma.serializer.SerializerService;
 import com.articulate.sigma.utils.AVPair;
 import com.articulate.sigma.utils.MapUtils;
 import com.articulate.sigma.utils.StringUtil;
@@ -27,6 +29,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.articulate.sigma.KBmanager.serializerName;
 import static com.articulate.sigma.wordNet.WordNetUtilities.isValidKey;
 
 /** ***************************************************************
@@ -1772,22 +1775,21 @@ public class WordNet implements Serializable {
      *  Load the most recently save serialized version.
      */
     public static void loadSerialized() {
+        SerializerService serializerService = SerializerFactory.getSerializer(serializerName);
+        if (debug)
+            System.out.println("WordNet.loadSerialized(): Deserialize with " + serializerName);
 
         wn = null;
         try {
             // Reading the object from a file
-            FileInputStream file = new FileInputStream(baseDir + File.separator + "wn.ser");
-            ObjectInputStream in = new ObjectInputStream(file);
-            // Method for deserialization of object
-            wn = (WordNet) in.readObject();
+            String fileName = baseDir + File.separator + "wn.ser";
+            wn = (WordNet) serializerService.deserializeObject(fileName);
             if (serializedOld()) {
                 wn = null;
                 System.out.println("WordNet.loadSerialized(): serialized file is older than sources, " +
                         "reloding from sources.");
                 return;
             }
-            in.close();
-            file.close();
             System.out.println("WordNet.loadSerialized(): WN has been deserialized ");
             initNeeded = false;
             System.out.println("INFO in WordNet.loadSerialized(): origMaxNounSynsetID: " +
@@ -1814,13 +1816,11 @@ public class WordNet implements Serializable {
         if (StringUtil.emptyString(wn.origMaxNounSynsetID))
             System.out.println("Error in WordNet.serialize(): empty max synset id");
         try {
-            // Reading the object from a file
-            FileOutputStream file = new FileOutputStream(baseDir + File.separator + "wn.ser");
-            ObjectOutputStream out = new ObjectOutputStream(file);
-            // Method for deserialization of object
-            out.writeObject(wn);
-            out.close();
-            file.close();
+            SerializerService serializerService = SerializerFactory.getSerializer(serializerName);
+            if (debug)
+                System.out.println("WordNet.serialize(): Serialize with " + serializerName);
+            String fileName = baseDir + File.separator + "wn.ser";
+            serializerService.serializeObject(wn, fileName);
             System.out.println("WordNet.serialize(): WN has been serialized ");
             initNeeded = false;
         }

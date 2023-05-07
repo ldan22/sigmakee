@@ -5,8 +5,11 @@ import java.util.*;
 
 import com.articulate.sigma.KB;
 import com.articulate.sigma.KBmanager;
+import com.articulate.sigma.serializer.SerializerFactory;
+import com.articulate.sigma.serializer.SerializerService;
 
 import static com.articulate.sigma.wordNet.WordNet.baseDir;
+import static com.articulate.sigma.wordNet.WordNet.debug;
 
 public class OMWordnet implements Serializable {
 
@@ -273,19 +276,18 @@ August 9, Acapulco, Mexico.
             return;
         omw = null;
         try {
-            // Reading the object from a file
-            FileInputStream file = new FileInputStream(baseDir + File.separator + "omw.ser");
-            ObjectInputStream in = new ObjectInputStream(file);
-            // Method for deserialization of object
-            omw = (OMWordnet) in.readObject();
+            String serializerName = KBmanager.getMgr().getPref("serializer");
+            if(debug)
+                System.out.println("OMWordnet.loadSerialized(): Deserialize with " + serializerName);
+            SerializerService serializerService = SerializerFactory.getSerializer(serializerName);
+            String fileName = baseDir + File.separator + "omw.ser";
+            omw = (OMWordnet) serializerService.deserializeObject(fileName);
             if (serializedOld()) {
                 omw = null;
                 System.out.println("OMWordnet.loadSerialized(): serialized file is older than sources, " +
                         "reloding from sources.");
                 return;
             }
-            in.close();
-            file.close();
             System.out.println("OMWordnet.loadSerialized(): OMW has been deserialized ");
         }
         catch(IOException ex) {
@@ -305,12 +307,12 @@ August 9, Acapulco, Mexico.
 
         try {
             // Reading the object from a file
-            FileOutputStream file = new FileOutputStream(baseDir + File.separator + "omw.ser");
-            ObjectOutputStream out = new ObjectOutputStream(file);
-            // Method for deserialization of object
-            out.writeObject(omw);
-            out.close();
-            file.close();
+            String serializerName = KBmanager.getMgr().getPref("serializer");
+            if(debug)
+                System.out.println("OMWordnet.serialize(): Serialize with " + serializerName);
+            SerializerService serializerService = SerializerFactory.getSerializer(serializerName);
+            String fileName = baseDir + File.separator + "omw.ser";
+            serializerService.serializeObject(omw, fileName);
             System.out.println("OMWordnet.serialize(): OMW has been serialized ");
         }
         catch(IOException ex) {
