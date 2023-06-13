@@ -665,7 +665,8 @@ public class TPTP3ProofProcessor {
                     continue;
                 }
                 if (line.indexOf("SZS status") != -1) {
-                    status = line.substring(13);
+					int endIndex = line.indexOf(" for temp-comb");
+                    status = line.substring(13, endIndex);
 					if (debug) System.out.println("TPTP3ProofProcessor.parseProofOutput(ar): tpp.status: " + status);
                 }
                 if (line.indexOf("SZS answers") != -1) {
