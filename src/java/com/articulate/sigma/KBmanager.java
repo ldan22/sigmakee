@@ -20,6 +20,7 @@ package com.articulate.sigma;
 import com.articulate.sigma.CCheckManager.CCheckStatus;
 import com.articulate.sigma.VerbNet.VerbNet;
 import com.articulate.sigma.nlg.NLGUtils;
+import com.articulate.sigma.serializer.FstSerializer;
 import com.articulate.sigma.serializer.SerializerFactory;
 import com.articulate.sigma.serializer.SerializerService;
 import com.articulate.sigma.trans.SUMOKBtoTPTPKB;
@@ -48,7 +49,6 @@ public class KBmanager implements Serializable {
     public static boolean initialized = false;
     public static boolean initializing = false;
     public static boolean debug = false;
-    public static String serializerName = "fst";
     private String error = "";
 
     public static final List<String> configKeys =
@@ -178,16 +178,12 @@ public class KBmanager implements Serializable {
      *  Load the most recently saved serialized version.
      */
     public static boolean loadSerialized() {
-        SerializerService serializerService = SerializerFactory.getSerializer(serializerName);
-        if(debug)
-            System.out.println("KBmanager.loadSerialized(): Deserialize with " + serializerName);
-
         manager = null;
         try {
             String kbDir = System.getenv("SIGMA_HOME") + File.separator + "KBs";
             String fileName = kbDir + File.separator + "kbmanager.ser";
             // Method for deserialization of object
-            manager = (KBmanager) serializerService.deserializeObject(fileName);
+            manager = (KBmanager) FstSerializer.deserializeFromFile(fileName);
             System.out.println("KBmanager.loadSerialized(): KBmanager has been deserialized ");
             initialized = true;
         }
@@ -209,15 +205,11 @@ public class KBmanager implements Serializable {
      *  save serialized version.
      */
     public static void serialize() {
-        SerializerService serializerService = SerializerFactory.getSerializer(serializerName);
-        if(debug)
-            System.out.println("KBmanager.serialize(): Serialize with " + serializerName);
-
         try {
             // Reading the object from a file
             String kbDir = System.getenv("SIGMA_HOME") + File.separator + "KBs";
             String fileName = kbDir + File.separator + "kbmanager.ser";
-            serializerService.serializeObject(manager, fileName);
+            FstSerializer.serializeToFile(manager, fileName);
             System.out.println("KBmanager.serialize(): KBmanager has been serialized ");
         }
         catch (IOException ex) {

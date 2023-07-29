@@ -5,6 +5,7 @@ import java.util.*;
 
 import com.articulate.sigma.KB;
 import com.articulate.sigma.KBmanager;
+import com.articulate.sigma.serializer.FstSerializer;
 import com.articulate.sigma.serializer.SerializerFactory;
 import com.articulate.sigma.serializer.SerializerService;
 
@@ -276,12 +277,8 @@ August 9, Acapulco, Mexico.
             return;
         omw = null;
         try {
-            String serializerName = KBmanager.getMgr().getPref("serializer");
-            if(debug)
-                System.out.println("OMWordnet.loadSerialized(): Deserialize with " + serializerName);
-            SerializerService serializerService = SerializerFactory.getSerializer(serializerName);
             String fileName = baseDir + File.separator + "omw.ser";
-            omw = (OMWordnet) serializerService.deserializeObject(fileName);
+            omw = (OMWordnet) FstSerializer.deserializeFromFile(fileName);
             if (serializedOld()) {
                 omw = null;
                 System.out.println("OMWordnet.loadSerialized(): serialized file is older than sources, " +
@@ -307,12 +304,8 @@ August 9, Acapulco, Mexico.
 
         try {
             // Reading the object from a file
-            String serializerName = KBmanager.getMgr().getPref("serializer");
-            if(debug)
-                System.out.println("OMWordnet.serialize(): Serialize with " + serializerName);
-            SerializerService serializerService = SerializerFactory.getSerializer(serializerName);
             String fileName = baseDir + File.separator + "omw.ser";
-            serializerService.serializeObject(omw, fileName);
+            FstSerializer.serializeToFile(omw, fileName);
             System.out.println("OMWordnet.serialize(): OMW has been serialized ");
         }
         catch(IOException ex) {
