@@ -21,8 +21,6 @@ import com.articulate.sigma.CCheckManager.CCheckStatus;
 import com.articulate.sigma.VerbNet.VerbNet;
 import com.articulate.sigma.nlg.NLGUtils;
 import com.articulate.sigma.serializer.FstSerializer;
-import com.articulate.sigma.serializer.SerializerFactory;
-import com.articulate.sigma.serializer.SerializerService;
 import com.articulate.sigma.trans.SUMOKBtoTPTPKB;
 import com.articulate.sigma.utils.StringUtil;
 import com.articulate.sigma.wordNet.OMWordnet;

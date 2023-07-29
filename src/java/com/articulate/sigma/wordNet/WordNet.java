@@ -19,8 +19,6 @@ package com.articulate.sigma.wordNet;
 
 import com.articulate.sigma.*;
 import com.articulate.sigma.serializer.FstSerializer;
-import com.articulate.sigma.serializer.SerializerFactory;
-import com.articulate.sigma.serializer.SerializerService;
 import com.articulate.sigma.utils.AVPair;
 import com.articulate.sigma.utils.MapUtils;
 import com.articulate.sigma.utils.StringUtil;

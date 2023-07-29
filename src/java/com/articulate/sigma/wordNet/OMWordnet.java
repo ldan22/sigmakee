@@ -6,8 +6,6 @@ import java.util.*;
 import com.articulate.sigma.KB;
 import com.articulate.sigma.KBmanager;
 import com.articulate.sigma.serializer.FstSerializer;
-import com.articulate.sigma.serializer.SerializerFactory;
-import com.articulate.sigma.serializer.SerializerService;
 
 import static com.articulate.sigma.wordNet.WordNet.baseDir;
 import static com.articulate.sigma.wordNet.WordNet.debug;
